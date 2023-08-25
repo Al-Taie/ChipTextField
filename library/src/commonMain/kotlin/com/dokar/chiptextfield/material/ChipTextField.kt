@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield
+package com.dokar.chiptextfield.material
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -25,6 +25,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.dokar.chiptextfield.common.Chip
+import com.dokar.chiptextfield.common.ChipStyle
+import com.dokar.chiptextfield.common.ChipTextFieldState
+import com.dokar.chiptextfield.common.CloseButton
 
 /**
  * Chip text field with Material Design filled style.

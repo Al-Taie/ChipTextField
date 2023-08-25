@@ -1,6 +1,6 @@
 package com.dokar.chiptextfield.sample.data
 
-import com.dokar.chiptextfield.Chip
+import com.dokar.chiptextfield.common.Chip
 import kotlin.random.Random
 
 object SampleChips {

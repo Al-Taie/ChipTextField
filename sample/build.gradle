@@ -6,12 +6,12 @@ plugins {
 android {
     namespace 'com.dokar.chiptextfield.sample'
 
-    compileSdk compile_sdk
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.dokar.chiptextfield.sample"
-        minSdk 21
-        targetSdk target_sdk
+        minSdk 24
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -38,6 +38,7 @@ android {
         compose true
     }
     composeOptions {
+        def compose_compiler_version = '1.5.1'
         kotlinCompilerExtensionVersion compose_compiler_version
     }
     packagingOptions {
@@ -48,7 +49,7 @@ android {
 }
 
 dependencies {
-
+    def compose_bom_version = '2023.08.00'
     implementation project(':library')
 
     implementation 'androidx.core:core-ktx:1.9.0'

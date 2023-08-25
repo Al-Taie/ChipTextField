@@ -19,12 +19,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dokar.chiptextfield.Chip
-import com.dokar.chiptextfield.ChipTextField
-import com.dokar.chiptextfield.ChipTextFieldDefaults
-import com.dokar.chiptextfield.OutlinedChipTextField
-import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.common.Chip
+import com.dokar.chiptextfield.material.ChipTextField
+import com.dokar.chiptextfield.material.ChipTextFieldDefaults
+import com.dokar.chiptextfield.material.OutlinedChipTextField
+import com.dokar.chiptextfield.common.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.SampleChips
+
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi

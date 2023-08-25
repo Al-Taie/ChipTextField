@@ -17,9 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.dokar.chiptextfield.ChipTextField
-import com.dokar.chiptextfield.ChipTextFieldDefaults
-import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.material.ChipTextField
+import com.dokar.chiptextfield.material.ChipTextFieldDefaults
+import com.dokar.chiptextfield.common.rememberChipTextFieldState
 import com.dokar.chiptextfield.sample.data.AvatarChip
 import com.dokar.chiptextfield.sample.data.SampleChips
 

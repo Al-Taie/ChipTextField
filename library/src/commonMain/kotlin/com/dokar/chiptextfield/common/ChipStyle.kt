@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield
+package com.dokar.chiptextfield.common
 
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.runtime.Composable

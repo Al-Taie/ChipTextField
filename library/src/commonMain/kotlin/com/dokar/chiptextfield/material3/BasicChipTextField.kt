@@ -1,4 +1,4 @@
-package com.dokar.chiptextfield
+package com.dokar.chiptextfield.material3
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -19,9 +19,10 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +40,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
@@ -56,9 +56,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.dokar.chiptextfield.common.Chip
+import com.dokar.chiptextfield.common.ChipStyle
+import com.dokar.chiptextfield.common.ChipTextFieldState
+import com.dokar.chiptextfield.common.CloseButton
+import com.dokar.chiptextfield.common.TextFieldFocusState
 import com.dokar.chiptextfield.util.StableHolder
 import com.dokar.chiptextfield.util.filterNewLines
-import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -107,7 +112,6 @@ fun <T : Chip> BasicChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -133,7 +137,6 @@ fun <T : Chip> BasicChipTextField(
         onChipClick = onChipClick,
         onChipLongClick = onChipLongClick,
         interactionSource = interactionSource,
-        colors = colors,
         decorationBox = decorationBox,
     )
 }
@@ -186,7 +189,7 @@ fun <T : Chip> BasicChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    colors: TextFieldColors = TextFieldDefaults.colors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -231,7 +234,6 @@ fun <T : Chip> BasicChipTextField(
         onChipClick = onChipClick,
         onChipLongClick = onChipLongClick,
         interactionSource = interactionSource,
-        colors = colors,
         decorationBox = decorationBox,
     )
 }
@@ -289,7 +291,6 @@ fun <T : Chip> BasicChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit =
         @Composable { innerTextField -> innerTextField() },
 ) {
@@ -394,7 +395,7 @@ fun <T : Chip> BasicChipTextField(
                 },
                 onLoseFocus = {
                     scope.launch {
-                        awaitFrame()
+                        delay(100)
                         runCatching { textFieldFocusRequester.requestFocus() }
                     }
                     state.updateFocusedChip(null)
@@ -414,7 +415,7 @@ fun <T : Chip> BasicChipTextField(
                     val chip = onSubmit(it)
                     if (chip != null) {
                         scope.launch {
-                            awaitFrame()
+                            delay(100)
                             bringLastIntoViewRequester.value.bringIntoView()
                             state.focusTextField()
                         }
@@ -427,7 +428,6 @@ fun <T : Chip> BasicChipTextField(
                 readOnly = readOnly,
                 isError = isError,
                 textStyle = textStyle,
-                colors = colors,
                 keyboardOptions = keyboardOptions,
                 focusRequester = textFieldFocusRequester,
                 interactionSource = interactionSource,
@@ -576,7 +576,6 @@ private fun <T : Chip> Input(
     readOnly: Boolean,
     isError: Boolean,
     textStyle: TextStyle,
-    colors: TextFieldColors,
     keyboardOptions: KeyboardOptions,
     focusRequester: FocusRequester,
     interactionSource: MutableInteractionSource,
@@ -586,10 +585,7 @@ private fun <T : Chip> Input(
     if (value.text.isEmpty() && (!enabled || readOnly)) {
         return
     }
-    val textColor = textStyle.color.takeOrElse {
-        colors.textColor(enabled).value
-    }
-
+    val textColor = textStyle.color
     fun tryAddNewChip(value: TextFieldValue): Boolean {
         return onSubmit(value)?.also { state.addChip(it) } != null
     }
@@ -628,7 +624,12 @@ private fun <T : Chip> Input(
             }
         ),
         interactionSource = interactionSource,
-        cursorBrush = SolidColor(colors.cursorColor(isError).value),
+        cursorBrush = SolidColor(
+            if (isError)
+                MaterialTheme.colorScheme.error
+            else
+                MaterialTheme.colorScheme.primary
+        ),
     )
 }
 
@@ -804,11 +805,11 @@ private fun ChipItemLayout(
             trailingPlaceable.height,
         )
 
-        val placeables = arrayOf(leadingPlaceable, contentPlaceable, trailingPlaceable)
+        val placeableItems = arrayOf(leadingPlaceable, contentPlaceable, trailingPlaceable)
 
         layout(width = width, height = height) {
             var x = 0
-            for (placeable in placeables) {
+            for (placeable in placeableItems) {
                 placeable.placeRelative(
                     x = x,
                     y = (height - placeable.height) / 2,
