@@ -1,17 +1,18 @@
-package com.dokar.chiptextfield
+package com.dokar.chiptextfield.material3
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -19,16 +20,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.dokar.chiptextfield.util.runIf
+import com.dokar.chiptextfield.common.Chip
+import com.dokar.chiptextfield.common.ChipStyle
+import com.dokar.chiptextfield.common.ChipTextFieldState
+import com.dokar.chiptextfield.common.CloseButton
 
 /**
- * Chip text field with Material Design outlined style.
+ * Chip text field with Material Design filled style.
  *
  * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
  * used to control style, layout and interaction of the inner text field independently.
@@ -36,7 +41,7 @@ import com.dokar.chiptextfield.util.runIf
  * This is a sample to constraint the height of the inner text field and makes it scrollable:
  *
  * ```kotlin
- * OutlinedChipTextField(
+ * ChipTextField(
  *     state = ...,
  *     onSubmit = ...,
  *     modifier = Modifier,
@@ -47,10 +52,10 @@ import com.dokar.chiptextfield.util.runIf
  * ```
  *
  * @see [BasicChipTextField]
- * @see [OutlinedTextField]
+ * @see [TextField]
  */
 @Composable
-fun <T : Chip> OutlinedChipTextField(
+fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
     onSubmit: (value: String) -> T?,
     modifier: Modifier = Modifier,
@@ -73,12 +78,19 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    shape: Shape = TextFieldDefaults.shape,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    contentPadding: PaddingValues =
+        if (label == null) {
+            TextFieldDefaults.contentPaddingWithoutLabel()
+        } else {
+            TextFieldDefaults.contentPaddingWithLabel(
+            )
+        }
 ) {
     var value by remember { mutableStateOf(TextFieldValue()) }
     val onValueChange: (TextFieldValue) -> Unit = { value = it }
-    OutlinedChipTextField(
+    ChipTextField(
         state = state,
         onSubmit = { onSubmit(it.text) },
         value = value,
@@ -105,11 +117,12 @@ fun <T : Chip> OutlinedChipTextField(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors,
+        contentPadding = contentPadding,
     )
 }
 
 /**
- * Chip text field with Material Design outlined style.
+ * Chip text field with Material Design filled style.
  *
  * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
  * used to control style, layout and interaction of the inner text field independently.
@@ -117,7 +130,7 @@ fun <T : Chip> OutlinedChipTextField(
  * This is a sample to constraint the height of the inner text field and makes it scrollable:
  *
  * ```kotlin
- * OutlinedChipTextField(
+ * ChipTextField(
  *     state = ...,
  *     onSubmit = ...,
  *     modifier = Modifier,
@@ -128,10 +141,10 @@ fun <T : Chip> OutlinedChipTextField(
  * ```
  *
  * @see [BasicChipTextField]
- * @see [OutlinedTextField]
+ * @see [TextField]
  */
 @Composable
-fun <T : Chip> OutlinedChipTextField(
+fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
     value: String,
     onValueChange: (String) -> Unit,
@@ -156,8 +169,16 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    shape: Shape = TextFieldDefaults.shape,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    contentPadding: PaddingValues =
+        if (label == null) {
+            TextFieldDefaults.contentPaddingWithoutLabel(
+            )
+        } else {
+            TextFieldDefaults.contentPaddingWithLabel(
+            )
+        }
 ) {
     // Copied from androidx.compose.foundation.text.BasicTextField.kt
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
@@ -180,7 +201,7 @@ fun <T : Chip> OutlinedChipTextField(
             onValueChange(newTextFieldValueState.text)
         }
     }
-    OutlinedChipTextField(
+    ChipTextField(
         state = state,
         onSubmit = { onSubmit(it.text) },
         value = textFieldValue,
@@ -207,11 +228,12 @@ fun <T : Chip> OutlinedChipTextField(
         interactionSource = interactionSource,
         shape = shape,
         colors = colors,
+        contentPadding = contentPadding,
     )
 }
 
 /**
- * Chip text field with Material Design outlined style.
+ * Chip text field with Material Design filled style.
  *
  * The [innerModifier] will be passed to the inner text field of the decoration box. This can be
  * used to control style, layout and interaction of the inner text field independently.
@@ -219,7 +241,7 @@ fun <T : Chip> OutlinedChipTextField(
  * This is a sample to constraint the height of the inner text field and makes it scrollable:
  *
  * ```kotlin
- * OutlinedChipTextField(
+ * ChipTextField(
  *     state = ...,
  *     onSubmit = ...,
  *     modifier = Modifier,
@@ -230,11 +252,11 @@ fun <T : Chip> OutlinedChipTextField(
  * ```
  *
  * @see [BasicChipTextField]
- * @see [OutlinedTextField]
+ * @see [TextField]
  */
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T : Chip> OutlinedChipTextField(
+fun <T : Chip> ChipTextField(
     state: ChipTextFieldState<T>,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
@@ -259,13 +281,21 @@ fun <T : Chip> OutlinedChipTextField(
     onChipClick: ((chip: T) -> Unit)? = null,
     onChipLongClick: ((chip: T) -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    shape: Shape = TextFieldDefaults.shape,
+    colors: TextFieldColors = TextFieldDefaults.colors(),
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    contentPadding: PaddingValues =
+        if (label == null) {
+            TextFieldDefaults.contentPaddingWithoutLabel()
+        } else {
+            TextFieldDefaults.contentPaddingWithLabel()
+        }
 ) {
+
     Box(
         modifier = modifier
-            .runIf(label != null) { modifier.padding(top = 8.dp) }
-            .background(colors.backgroundColor(enabled).value, shape)
+            .background(containerColor, shape)
+            .indicatorLine(enabled, isError, interactionSource, colors)
     ) {
         BasicChipTextField(
             state = state,
@@ -287,9 +317,8 @@ fun <T : Chip> OutlinedChipTextField(
             onChipClick = onChipClick,
             onChipLongClick = onChipLongClick,
             interactionSource = interactionSource,
-            colors = colors,
             decorationBox = { innerTextField ->
-                TextFieldDefaults.OutlinedTextFieldDecorationBox(
+                TextFieldDefaults.DecorationBox(
                     value = if (state.chips.isEmpty() && value.text.isEmpty()) "" else " ",
                     innerTextField = innerTextField,
                     enabled = !readOnly,
@@ -302,15 +331,7 @@ fun <T : Chip> OutlinedChipTextField(
                     leadingIcon = leadingIcon,
                     trailingIcon = trailingIcon,
                     colors = colors,
-                    border = {
-                        TextFieldDefaults.BorderBox(
-                            enabled,
-                            isError,
-                            interactionSource,
-                            colors,
-                            shape
-                        )
-                    },
+                    contentPadding = contentPadding,
                 )
             },
         )

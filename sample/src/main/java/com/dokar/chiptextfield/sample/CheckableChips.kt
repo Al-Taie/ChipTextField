@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.dokar.chiptextfield.BasicChipTextField
-import com.dokar.chiptextfield.ChipTextFieldDefaults
-import com.dokar.chiptextfield.rememberChipTextFieldState
+import com.dokar.chiptextfield.common.rememberChipTextFieldState
+import com.dokar.chiptextfield.material.BasicChipTextField
+import com.dokar.chiptextfield.material.ChipTextFieldDefaults
 import com.dokar.chiptextfield.sample.data.CheckableChip
 import com.dokar.chiptextfield.sample.data.SampleChips
+
 
 @ExperimentalComposeUiApi
 @ExperimentalFoundationApi
